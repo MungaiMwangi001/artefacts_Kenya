@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, ShoppingCart, Star, Eye } from 'lucide-react';
+import { Heart, ShoppingCart, Star, Eye, Check } from 'lucide-react';
 import { Button } from './button';
 import { Badge } from './badge';
 import { useCurrency } from '../../contexts/CurrencyContext';
@@ -21,7 +21,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const { formatPrice } = useCurrency();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
-  const { addToCart } = useCart();
+  const { addToCart, isInCart } = useCart();
 
   const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -174,14 +174,23 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* Add to Cart Button */}
-        <Button
-          onClick={handleAddToCart}
-          disabled={product.stock === 0}
-          className="w-full bg-amber-600 hover:bg-amber-700 text-white disabled:bg-gray-300 disabled:cursor-not-allowed"
-        >
-          <ShoppingCart size={16} className="mr-2" />
-          {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
-        </Button>
+        {isInCart && isInCart(product.id) ? (
+          <Button
+            disabled
+            className="w-full bg-green-600 text-white cursor-default flex items-center justify-center gap-2"
+          >
+            <Check className="h-4 w-4" /> In Cart
+          </Button>
+        ) : (
+          <Button
+            onClick={handleAddToCart}
+            disabled={product.stock === 0}
+            className="w-full bg-amber-600 hover:bg-amber-700 text-white disabled:bg-gray-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <ShoppingCart size={16} className="mr-2" />
+            {product.stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -79,13 +79,33 @@ const Navbar = () => {
               <option value="USD">USD</option>
               <option value="EUR">EUR</option>
             </select>
+            {/* Account Dropdown (last in row) */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="h-auto p-1">
+                  <User className="h-5 w-5 mr-1" />
+                  <span className="hidden sm:inline">Account</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/account">My Account</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/orders">Order History</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/auth/login">Sign In</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
 
         {/* Main Navigation */}
-        <div className="flex items-center justify-between py-4">
-          {/* Mobile: Logo, Categories dropdown, Hamburger menu */}
-          <div className="flex w-full items-center justify-between lg:hidden">
+        <div className="w-full">
+          {/* Top row: logo, categories, search toggle, cart, hamburger */}
+          <div className="flex items-center justify-between gap-2 w-full py-4">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
               <h1 className="text-2xl font-bold text-gradient-safari">African Stores</h1>
@@ -106,171 +126,42 @@ const Navbar = () => {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
+            {/* Search Toggle */}
+            <Button variant="ghost" size="sm" className="flex items-center gap-1" onClick={() => setIsSearchOpen((v) => !v)} aria-label="Toggle search bar">
+              <Search className="h-5 w-5" />
+              <span className="hidden sm:inline">Search</span>
+            </Button>
+            {/* Cart Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="relative"
+              onClick={() => {
+                if (location.pathname === '/cart') {
+                  navigate('/shop');
+                } else {
+                  navigate('/cart');
+                }
+              }}
+              aria-label="Cart"
+            >
+              <ShoppingBag className="h-5 w-5" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Button>
             {/* Hamburger Menu */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="lg:hidden">
-                  <Menu className="h-5 w-5" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-80">
-                <SheetHeader>
-                  <SheetTitle>Menu</SheetTitle>
-                  <SheetDescription>
-                    Discover authentic Kenyan safari products
-                  </SheetDescription>
-                </SheetHeader>
-                <div className="flex flex-col space-y-4 mt-8">
-                  {navigationItems.map((item) => (
-                    <Link
-                      key={item.name}
-                      to={item.href}
-                      className="text-lg font-medium text-foreground hover:text-primary transition-colors"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              </SheetContent>
-            </Sheet>
-          </div>
-
-          {/* Desktop: nav and categories dropdown as before */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {navigationItems.map((item, idx) => (
-              <React.Fragment key={item.name}>
-                <Link
-                  to={item.href}
-                  className="text-foreground hover:text-primary transition-colors font-medium"
-                >
-                  {item.name}
-                </Link>
-                {/* Insert Categories dropdown after Shop link */}
-                {item.name === 'Shop' && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="ml-1 flex items-center gap-1">
-                        Categories
-                        <ChevronDown className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      {categories.map((cat) => (
-                        <DropdownMenuItem key={cat.slug} onClick={() => handleCategorySelect(cat.slug, cat.name)}>
-                          {cat.name}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-              </React.Fragment>
-            ))}
-          </nav>
-
-          {/* Actions (unchanged) */}
-          <div className="flex items-center space-x-3">
-            {/* Search */}
-            <div className="relative hidden md:block">
-              {isSearchOpen ? (
-                <form onSubmit={handleSearch} className="flex items-center">
-                  <Input
-                    type="text"
-                    placeholder="Search safari products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-64 rounded-full"
-                    autoFocus
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsSearchOpen(false)}
-                    className="ml-2"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </form>
-              ) : (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsSearchOpen(true)}
-                >
-                  <Search className="h-5 w-5" />
-                </Button>
-              )}
-            </div>
-
-            {/* Mobile Search */}
-            <Button
-              variant="ghost"
-              size="sm"
-              className="md:hidden"
-              onClick={() => setIsSearchOpen(true)}
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-
-            {/* Wishlist */}
-            <Button variant="ghost" size="sm" asChild className="relative">
-              <Link to="/wishlist">
-                <Heart className="h-5 w-5" />
-                {wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {wishlistCount}
-                  </span>
-                )}
-              </Link>
-            </Button>
-
-            {/* Cart */}
-            <Button variant="ghost" size="sm" asChild className="relative">
-              <Link to="/cart">
-                <ShoppingBag className="h-5 w-5" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
-            </Button>
-
-            {/* Account */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="sm">
-                  <User className="h-5 w-5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link to="/account">My Account</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/orders">Order History</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/auth/login">Sign In</Link>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Mobile Menu */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="sm" className="lg:hidden">
                   <Menu className="h-5 w-5" />
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80">
-                <SheetHeader>
-                  <SheetTitle>Menu</SheetTitle>
-                  <SheetDescription>
-                    Discover authentic Kenyan safari products
-                  </SheetDescription>
-                </SheetHeader>
                 <div className="flex flex-col space-y-4 mt-8">
+                  {/* Other navigation links */}
                   {navigationItems.map((item) => (
                     <Link
                       key={item.name}
@@ -280,39 +171,36 @@ const Navbar = () => {
                       {item.name}
                     </Link>
                   ))}
+                  {/* Wishlist */}
+                  <Button variant="ghost" size="sm" asChild className="w-full text-left">
+                    <Link to="/wishlist">
+                      <Heart className="h-5 w-5 mr-2" /> Wishlist
+                    </Link>
+                  </Button>
                 </div>
               </SheetContent>
             </Sheet>
           </div>
+          {/* Search bar below the nav row, toggled by Search button */}
+          {isSearchOpen && (
+            <form onSubmit={handleSearch} className="flex items-center w-full mt-2 px-1">
+              <div className="relative w-full">
+                <Input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="rounded-full text-sm pl-10 pr-2 py-2 w-full"
+                  autoFocus
+                />
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <Search className="h-4 w-4" />
+                </span>
+              </div>
+            </form>
+          )}
         </div>
       </div>
-
-      {/* Mobile Search Overlay */}
-      {isSearchOpen && (
-        <div className="md:hidden absolute top-full left-0 right-0 bg-background border-b border-border p-4">
-          <form onSubmit={handleSearch} className="flex items-center space-x-2">
-            <Input
-              type="text"
-              placeholder="Search safari products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1"
-              autoFocus
-            />
-            <Button type="submit" size="sm" className="btn-safari">
-              Search
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsSearchOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </form>
-        </div>
-      )}
     </header>
   );
 };

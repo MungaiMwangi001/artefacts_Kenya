@@ -28,6 +28,7 @@ interface CartContextType {
   cartCount: number;
   cartTotal: number;
   getItemQuantity: (productId: string) => number;
+  isInCart: (productId: string) => boolean;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -93,6 +94,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return item ? item.quantity : 0;
   };
 
+  const isInCart = (productId: string): boolean => {
+    return cart.some(item => item.product.id === productId);
+  };
+
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
   const cartTotal = cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
 
@@ -105,7 +110,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       clearCart,
       cartCount,
       cartTotal,
-      getItemQuantity
+      getItemQuantity,
+      isInCart
     }}>
       {children}
     </CartContext.Provider>
