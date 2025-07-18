@@ -84,20 +84,59 @@ const Navbar = () => {
 
         {/* Main Navigation */}
         <div className="flex items-center justify-between py-4">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gradient-safari">
-                African Stores
-              </h1>
-              <span className="text-xs text-muted-foreground ml-2 hidden sm:inline">
-                Authentic Safari
-              </span>
-            </div>
-          </Link>
+          {/* Mobile: Logo, Categories dropdown, Hamburger menu */}
+          <div className="flex w-full items-center justify-between lg:hidden">
+            {/* Logo */}
+            <Link to="/" className="flex items-center space-x-2">
+              <h1 className="text-2xl font-bold text-gradient-safari">African Stores</h1>
+            </Link>
+            {/* Categories Dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm" className="flex items-center gap-1">
+                  Categories
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start">
+                {categories.map((cat) => (
+                  <DropdownMenuItem key={cat.slug} onClick={() => handleCategorySelect(cat.slug, cat.name)}>
+                    {cat.name}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {/* Hamburger Menu */}
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="sm" className="lg:hidden">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-80">
+                <SheetHeader>
+                  <SheetTitle>Menu</SheetTitle>
+                  <SheetDescription>
+                    Discover authentic Kenyan safari products
+                  </SheetDescription>
+                </SheetHeader>
+                <div className="flex flex-col space-y-4 mt-8">
+                  {navigationItems.map((item) => (
+                    <Link
+                      key={item.name}
+                      to={item.href}
+                      className="text-lg font-medium text-foreground hover:text-primary transition-colors"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
 
-          {/* Navigation with Categories Dropdown */}
-          <nav className="flex items-center space-x-8">
+          {/* Desktop: nav and categories dropdown as before */}
+          <nav className="hidden lg:flex items-center space-x-8">
             {navigationItems.map((item, idx) => (
               <React.Fragment key={item.name}>
                 <Link
@@ -128,7 +167,7 @@ const Navbar = () => {
             ))}
           </nav>
 
-          {/* Actions */}
+          {/* Actions (unchanged) */}
           <div className="flex items-center space-x-3">
             {/* Search */}
             <div className="relative hidden md:block">

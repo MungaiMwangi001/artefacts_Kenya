@@ -157,7 +157,7 @@ const Index = () => {
             {categories.map((category) => (
               <Card key={category.id} className="group card-safari overflow-hidden h-80">
                 <CardContent className="p-0 h-full">
-                  <Link to={`/category/${category.slug}`} className="block h-full">
+                  <Link to={`/shop?category=${category.name.toLowerCase()}`}>
                     <div className="relative h-full">
                       <img
                         src={categoryImages[category.slug] || `https://via.placeholder.com/300x200?text=${category.name.replace(/\s/g, '+')}`}
